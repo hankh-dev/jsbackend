@@ -1,0 +1,8 @@
+{
+  "name": "kh-test-yarn2",
+  "packageManager": "yarn@3.5.1",
+  "dependencies": {
+    "chalk": "5.0.0"
+  },
+  "type": "module"
+}
