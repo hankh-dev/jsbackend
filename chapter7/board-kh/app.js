@@ -1,4 +1,5 @@
 const express = require("express");
+const morgan = require('morgan'); // 미들웨어 연결
 const { ObjectId } = require("mongodb");
 const handlebars = require("express-handlebars");
 const mongodbConnection = require("./configs/mongodb-connection");
@@ -8,6 +9,13 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// 로그 기록
+if (process.env.NODE_ENV === 'production') { 
+  app.use(morgan('combined')); // 배포환경이면
+} else {
+  app.use(morgan('dev')); // 개발환경이면
+}
+
 app.engine(
   "handlebars",
   handlebars.create({
@@ -16,6 +24,7 @@ app.engine(
 );
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
+
 app.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1; // 현재 페이지 데이터
   const search = req.query.search || ""; // 검색어 데이터
@@ -55,8 +64,9 @@ app.post("/check-password", async (req, res) => {
   const { id, password } = req.body;
 
   // postService의 getPostByIdAndPassword() 함수를 사용해 게시글 데이터 확인
-  const post = postService.getPostByIdAndPassword(collection, { id, password });
+  const post = await postService.getPostByIdAndPassword(collection, { id, password });
 
+  // console.log(post);
   // 데이터가 있으면 isExist true, 없으면 isExist false
   if (!post) {
     return res.status(404).json({ isExist: false });
@@ -70,7 +80,7 @@ app.get("/modify/:id", async (req, res) => {
   const { id } = req.params.id;
   // getPostById()  함수로 게시글 데이터를 받아옴
   const post = await postService.getPostById(collection, req.params.id);
-  console.log(post);
+  // console.log(post);
   res.render("write", { title: "테스트 게시판 ", mode: "modify", post });
 });
 
