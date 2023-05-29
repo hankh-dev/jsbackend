@@ -124,7 +124,7 @@ app.delete("/delete", async (req, res) => {
 // 댓글 추가
 app.post("/write-comment", async (req, res) => {
   const { id, name, password, comment } = req.body; // body에서 데이터를 가지고 오기
-  const post = await postService.getPostById(collection, id); // id로 게시글의 정보를 가져오기
+  const post = await postService.getPostById2(collection, id); // id로 게시글의 정보를 가져오기
   console.log(post);
   // 게시글에 기존 댓글 리스트가 있으면 추가
   if (post.comments) {

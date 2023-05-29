@@ -45,9 +45,14 @@ async function getPostByIdAndPassword(collection, { id, password }) {
   );
 }
 
-// ❷ id로 데이터 불러오기
+// ❷ id로 데이터 불러오기 (패스워드 제외)
 async function getPostById(collection, id) {
   return await collection.findOne({ _id: ObjectId(id) }, projectionOption);
+}
+
+// ❷ id로 데이터 불러오기 (패스워드 포함)
+async function getPostById2(collection, id) {
+  return await collection.findOne({ _id: ObjectId(id) });
 }
 
 // ❸ 게시글 수정
@@ -57,6 +62,7 @@ async function updatePost(collection, id, post) {
       ...post,
     },
   };
+  // console.log('toUpdatePost:',JSON.stringify(toUpdatePost,null,2))
   return await collection.updateOne({ _id: ObjectId(id) }, toUpdatePost);
 }
 
@@ -65,6 +71,7 @@ module.exports = {
   writePost,
   getDetailPost,
   getPostById,
+  getPostById2,
   getPostByIdAndPassword,
   updatePost,
 };
